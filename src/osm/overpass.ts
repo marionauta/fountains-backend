@@ -7,7 +7,8 @@ interface OverpassResponse<T> {
 export interface FountainRaw {
   id: number;
   lat: number;
-  lng: number;
+  lon: number;
+  tags: Record<string, string>;
 }
 
 export const query = async (area: AreaRaw): Promise<[FountainRaw]> => {
@@ -15,9 +16,16 @@ export const query = async (area: AreaRaw): Promise<[FountainRaw]> => {
   if (areaId === null) {
     throw "areaId is null";
   }
-  const url =
-    `http://overpass-api.de/api/interpreter?data=[timeout:25][out:json];area(${areaId})->.searchArea;(node["amenity"="drinking_water"](area.searchArea);); out body;`;
-  const response: OverpassResponse<FountainRaw> = await fetch(encodeURI(url))
+  const data = `
+    [out:json];
+    area(${areaId});
+    node[amenity=drinking_water](area);
+    out;
+  `;
+  const url = `http://overpass-api.de/api/interpreter?data=${
+    encodeURIComponent(data)
+  }`;
+  const response: OverpassResponse<FountainRaw> = await fetch(url)
     .then((res) => res.json());
   return response.elements;
 };
