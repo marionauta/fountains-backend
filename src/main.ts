@@ -1,4 +1,4 @@
-import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
+import { serve } from "https://deno.land/std@0.165.0/http/server.ts";
 import { osmIntoDto } from "./models/drinkingFountainDto.ts";
 import { query as queryArea } from "./osm/nominatim.ts";
 import { query as queryFountains } from "./osm/overpass.ts";
@@ -17,21 +17,31 @@ const fountains = await queryFountains(area);
 
 // http server
 
-const v1 = new Router();
-v1.get("/drinking-fountains", (context) => {
+const serveFountains = (request: Request): Response => {
+  if (request.method !== "GET") {
+    return new Response("Method not allowed", { status: 405 });
+  }
   const data = fountains.map(osmIntoDto);
-  context.response.body = {
-    data,
+  const body = JSON.stringify({ data });
+  const headers = {
+    "content-type": "application/json",
   };
-});
+  return new Response(body, { status: 200, headers });
+};
 
-const router = new Router();
-router.use("/v1", v1.routes(), v1.allowedMethods());
+const routes: Record<string, (r: Request) => Response> = {
+  "/v1/drinking-fountains": serveFountains,
+};
 
-const app = new Application();
-app.use(router.routes(), router.allowedMethods());
+const handler = (request: Request): Response => {
+  for (const [pathname, handler] of Object.entries(routes)) {
+    const pattern = new URLPattern({ pathname });
+    if (pattern.test(request.url)) {
+      return handler(request);
+    }
+  }
+  return new Response("Not found", { status: 404 });
+};
 
 const port = parseInt(Deno.env.get("PORT") || "8080", 10);
-
-console.log(`Listening on http://localhost:${port}`);
-await app.listen({ port });
+await serve(handler, { port });
