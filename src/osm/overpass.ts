@@ -1,17 +1,17 @@
-import { AreaRaw, getAreaId } from "./nominatim.ts";
+import { AreaOsm, getAreaId } from "./nominatim.ts";
 
 interface OverpassResponse<T> {
   elements: [T];
 }
 
-export interface FountainRaw {
+export interface FountainOsm {
   id: number;
   lat: number;
   lon: number;
   tags: Record<string, string>;
 }
 
-export const query = async (area: AreaRaw): Promise<[FountainRaw]> => {
+export const query = async (area: AreaOsm): Promise<[FountainOsm]> => {
   const areaId = getAreaId(area);
   if (areaId === null) {
     throw "areaId is null";
@@ -25,7 +25,7 @@ export const query = async (area: AreaRaw): Promise<[FountainRaw]> => {
   const url = `http://overpass-api.de/api/interpreter?data=${
     encodeURIComponent(data)
   }`;
-  const response: OverpassResponse<FountainRaw> = await fetch(url)
+  const response: OverpassResponse<FountainOsm> = await fetch(url)
     .then((res) => res.json());
   return response.elements;
 };

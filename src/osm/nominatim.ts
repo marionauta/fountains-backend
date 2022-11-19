@@ -1,13 +1,13 @@
-export interface AreaRaw {
+export interface AreaOsm {
   osm_type: string;
   osm_id: number;
   importance: number;
 }
 
-export const query = async (name: string): Promise<AreaRaw | null> => {
+export const query = async (name: string): Promise<AreaOsm | null> => {
   const url =
     `https://nominatim.openstreetmap.org/search?q=${name}&format=json`;
-  const areas: [AreaRaw] = await fetch(encodeURI(url))
+  const areas: [AreaOsm] = await fetch(encodeURI(url))
     .then((res) => res.json());
   const area = areas.reduce((acc, area) =>
     acc.importance > area.importance ? acc : area
@@ -15,7 +15,7 @@ export const query = async (name: string): Promise<AreaRaw | null> => {
   return area;
 };
 
-export const getAreaId = (area: AreaRaw): number | null => {
+export const getAreaId = (area: AreaOsm): number | null => {
   switch (area.osm_type) {
     case "way":
       return area.osm_id + 2400000000;
