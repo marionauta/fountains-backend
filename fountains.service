@@ -1,0 +1,12 @@
+[Unit]
+Description=Fountains Backend
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/fountains
+EnvironmentFile=/var/www/fountains/environment
+Type=exec
+Restart=always
+
+[Install]
+WantedBy=default.target
