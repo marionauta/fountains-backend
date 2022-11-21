@@ -2,7 +2,9 @@ import {
   ConnInfo,
   Handler,
   serve,
+  ServeInit,
 } from "https://deno.land/std@0.165.0/http/server.ts";
+import * as logger from "https://deno.land/std@0.165.0/log/mod.ts";
 import { osmIntoDto } from "./models/drinkingFountainDto.ts";
 import { query as queryArea } from "./osm/nominatim.ts";
 import { FountainOsm, query as queryFountains } from "./osm/overpass.ts";
@@ -12,6 +14,7 @@ if (!areaName) {
   throw "FOUNTAINS_AREA is not defined";
 }
 
+logger.info(`Retrieving area info for: ${areaName}`);
 const area = await queryArea(areaName);
 if (!area) {
   throw "Area not found";
@@ -20,6 +23,7 @@ if (!area) {
 // Cache time, in milliseconds. Defaults to 6 hours.
 const cacheTime: number = parseInt(Deno.env.get("CACHE_TIME") || "", 10) ||
   6 * 60 * 60 * 1000;
+logger.info(`Cache time set to ${cacheTime}ms`);
 let lastUpdated: Date | undefined;
 let fountains: FountainOsm[] = [];
 
@@ -28,7 +32,7 @@ const getFountains = async () => {
     lastUpdated === undefined ||
     new Date().getTime() - lastUpdated.getTime() > cacheTime
   ) {
-    console.log("Retrieving fountains...");
+    logger.info("Retrieving fountains...");
     fountains = await queryFountains(area);
     lastUpdated = new Date();
   }
@@ -67,5 +71,8 @@ const handler = async (
   return new Response("Not found", { status: 404 });
 };
 
+const onListen: ServeInit["onListen"] = ({ hostname, port }) =>
+  logger.info(`Listening on http://${hostname}:${port}/`);
+
 const port = parseInt(Deno.env.get("PORT") || "8080", 10);
-await serve(handler, { port });
+await serve(handler, { port, onListen });
