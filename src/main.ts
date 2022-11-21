@@ -17,13 +17,16 @@ if (!area) {
   throw "Area not found";
 }
 
+// Cache time, in milliseconds. Defaults to 6 hours.
+const cacheTime: number = parseInt(Deno.env.get("CACHE_TIME") || "", 10) ||
+  6 * 60 * 60 * 1000;
 let lastUpdated: Date | undefined;
 let fountains: FountainOsm[] = [];
 
 const getFountains = async () => {
   if (
     lastUpdated === undefined ||
-    new Date().getTime() - lastUpdated.getTime() > (0.5 * 60 * 1000)
+    new Date().getTime() - lastUpdated.getTime() > cacheTime
   ) {
     console.log("Retrieving fountains...");
     fountains = await queryFountains(area);
