@@ -1,5 +1,6 @@
 import { Handler, serve, ServeInit } from "deno/http/server.ts";
 import * as logger from "deno/log/mod.ts";
+import middlewares from "./middlewares/mod.ts";
 import { osmIntoDto } from "./models/drinkingFountainDto.ts";
 import { query as queryArea } from "./osm/nominatim.ts";
 import { FountainOsm, query as queryFountains } from "./osm/overpass.ts";
@@ -38,7 +39,7 @@ const getFountains = async () => {
 
 const serveFountains: Handler = async (request) => {
   if (request.method !== "GET") {
-    return new Response("Method not allowed", { status: 405 });
+    return new Response(null, { status: 405 });
   }
   const fountains = await getFountains();
   const data = fountains.map(osmIntoDto);
@@ -60,11 +61,11 @@ const handler: Handler = async (request, connInfo) => {
       return await handler(request, connInfo);
     }
   }
-  return new Response("Not found", { status: 404 });
+  return new Response(null, { status: 404 });
 };
 
 const onListen: ServeInit["onListen"] = ({ hostname, port }) =>
   logger.info(`Listening on http://${hostname}:${port}/`);
 
 const port = parseInt(Deno.env.get("PORT") || "8080", 10);
-await serve(handler, { port, onListen });
+await serve(middlewares(handler), { port, onListen });
