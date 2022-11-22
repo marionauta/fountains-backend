@@ -1,10 +1,5 @@
-import {
-  ConnInfo,
-  Handler,
-  serve,
-  ServeInit,
-} from "https://deno.land/std@0.165.0/http/server.ts";
-import * as logger from "https://deno.land/std@0.165.0/log/mod.ts";
+import { Handler, serve, ServeInit } from "deno/http/server.ts";
+import * as logger from "deno/log/mod.ts";
 import { osmIntoDto } from "./models/drinkingFountainDto.ts";
 import { query as queryArea } from "./osm/nominatim.ts";
 import { FountainOsm, query as queryFountains } from "./osm/overpass.ts";
@@ -41,7 +36,7 @@ const getFountains = async () => {
 
 // http server
 
-const serveFountains = async (request: Request): Promise<Response> => {
+const serveFountains: Handler = async (request) => {
   if (request.method !== "GET") {
     return new Response("Method not allowed", { status: 405 });
   }
@@ -58,10 +53,7 @@ const routes: Record<string, Handler> = {
   "/v1/drinking-fountains": serveFountains,
 };
 
-const handler = async (
-  request: Request,
-  connInfo: ConnInfo,
-): Promise<Response> => {
+const handler: Handler = async (request, connInfo) => {
   for (const [pathname, handler] of Object.entries(routes)) {
     const pattern = new URLPattern({ pathname });
     if (pattern.test(request.url)) {
