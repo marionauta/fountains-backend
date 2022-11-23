@@ -4,17 +4,16 @@ import * as logger from "deno/log/mod.ts";
 
 type Middleware = (next: Handler) => Handler;
 
-export const formatFailedResponses: Middleware = (next) =>
+const formatFailedResponses: Middleware = (next) =>
   async (request, connInfo) => {
     const response = await next(request, connInfo);
     if (response.ok) return response;
     const status: Status = response.status;
     const body = JSON.stringify({ error: STATUS_TEXT[status] });
-    const headers = { "content-type": "application/json" };
-    return new Response(body, { status, headers });
+    return new Response(body, { status });
   };
 
-export const logFailedResponses: Middleware = (next) =>
+const logFailedResponses: Middleware = (next) =>
   async (request, connInfo) => {
     const response = await next(request, connInfo);
     const pathname = new URL(request.url).pathname;
@@ -27,12 +26,20 @@ export const logFailedResponses: Middleware = (next) =>
     return response;
   };
 
+const everythingIsJson: Middleware = (next) =>
+  async (request, connInfo) => {
+    const response = await next(request, connInfo);
+    response.headers.set("content-type", "application/json");
+    return response;
+  };
+
 const compose = (...middlewares: Middleware[]): Middleware =>
-  (next) => middlewares.reduceRight((acc, cur) => cur(acc), next);
+  (next) => middlewares.reduce((acc, cur) => cur(acc), next);
 
 const middlewares = compose(
-  formatFailedResponses,
   logFailedResponses,
+  formatFailedResponses,
+  everythingIsJson,
 );
 
 export default middlewares;

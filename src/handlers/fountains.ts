@@ -10,10 +10,7 @@ const serveFountains: Handler = async (request) => {
   const fountains = await getFountains(area);
   const data = fountains.map(osmIntoDto);
   const body = JSON.stringify({ data });
-  const headers = {
-    "content-type": "application/json",
-  };
-  return new Response(body, { status: 200, headers });
+  return new Response(body);
 };
 
 export default serveFountains;
