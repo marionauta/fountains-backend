@@ -4,10 +4,12 @@ import { getArea, getFountains } from "@/services/mod.ts";
 
 const serveFountains: Handler = async () => {
   const area = await getArea();
-  const fountains = await getFountains(area);
-  const data = fountains.map(osmIntoDto);
-  const body = JSON.stringify({ data });
-  return new Response(body);
+  const { fountains, lastUpdated } = await getFountains(area);
+  const data = {
+    lastUpdated,
+    fountains: fountains.map(osmIntoDto),
+  };
+  return new Response(JSON.stringify({ data }));
 };
 
 export default serveFountains;

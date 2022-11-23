@@ -18,5 +18,5 @@ export const getFountains = async (area: AreaOsm) => {
     fountains = await queryFountains(area);
     lastUpdated = new Date();
   }
-  return fountains;
+  return { fountains, lastUpdated };
 };
