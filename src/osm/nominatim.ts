@@ -15,12 +15,12 @@ export const query = async (name: string): Promise<AreaOsm | null> => {
   return area;
 };
 
-export const getAreaId = (area: AreaOsm): number | null => {
-  switch (area.osm_type) {
+export const getAreaId = (type: string, id: number): number | null => {
+  switch (type) {
     case "way":
-      return area.osm_id + 2400000000;
+      return id + 2400000000;
     case "relation":
-      return area.osm_id + 3600000000;
+      return id + 3600000000;
     default:
       return null;
   }

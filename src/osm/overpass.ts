@@ -1,5 +1,3 @@
-import { AreaOsm, getAreaId } from "./nominatim.ts";
-
 interface OverpassResponse<T> {
   elements: [T];
 }
@@ -11,11 +9,7 @@ export interface FountainOsm {
   tags: Record<string, string>;
 }
 
-export const query = async (area: AreaOsm): Promise<[FountainOsm]> => {
-  const areaId = getAreaId(area);
-  if (areaId === null) {
-    throw "areaId is null";
-  }
+export const query = async (areaId: number): Promise<[FountainOsm]> => {
   const data = `
     [out:json];
     area(${areaId});

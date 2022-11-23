@@ -1,9 +1,10 @@
 import * as logger from "deno/log/mod.ts";
-import { AreaOsm, query as queryArea } from "@/osm/nominatim.ts";
+import { AreaDto, osmIntoDto } from "@/models/areaDto.ts";
+import { query as queryArea } from "@/osm/nominatim.ts";
 
-let area: AreaOsm | undefined;
+let area: AreaDto | undefined;
 
-export const getArea = async (): Promise<AreaOsm> => {
+export const getArea = async (): Promise<AreaDto> => {
   if (area) {
     return area;
   }
@@ -13,11 +14,11 @@ export const getArea = async (): Promise<AreaOsm> => {
     Deno.exit(1);
   }
   logger.info(`Retrieving area info for: ${areaName}`);
-  const _area = await queryArea(areaName);
-  if (_area === null) {
+  const areaOsm = await queryArea(areaName);
+  if (areaOsm === null) {
     logger.critical(`No area found for: ${areaName}`);
     Deno.exit(1);
   }
-  area = _area;
+  area = osmIntoDto(areaOsm);
   return area;
 };
