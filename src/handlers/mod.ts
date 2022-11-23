@@ -1,18 +1,21 @@
+import { Status } from "deno/http/http_status.ts";
 import { Handler } from "deno/http/server.ts";
 import serveFountains from "./fountains.ts";
 
-const routes: Record<string, Handler> = {
-  "/v1/drinking-fountains": serveFountains,
-};
+const routes: [string[], string, Handler][] = [
+  [["GET"], "/v1/drinking-fountains", serveFountains],
+];
 
 const handler: Handler = async (request, connInfo) => {
-  for (const [pathname, handler] of Object.entries(routes)) {
-    const pattern = new URLPattern({ pathname });
-    if (pattern.test(request.url)) {
-      return await handler(request, connInfo);
+  for (const [methods, pathname, handler] of routes) {
+    if (new URL(request.url).pathname === pathname) {
+      if (methods.includes(request.method)) {
+        return await handler(request, connInfo);
+      }
+      return new Response(null, { status: Status.MethodNotAllowed });
     }
   }
-  return new Response(null, { status: 404 });
+  return new Response(null, { status: Status.NotFound });
 };
 
 export default handler;
