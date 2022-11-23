@@ -2,8 +2,10 @@ import { Status } from "deno/http/http_status.ts";
 import { Handler } from "deno/http/server.ts";
 import serveFountains from "./fountains.ts";
 import serveServer from "./server.ts";
+import serveRoot from "./root.ts";
 
 const routes: [string[], string, Handler][] = [
+  [["GET"], "/", serveRoot],
   [["GET"], "/v1/drinking-fountains", serveFountains],
   [["GET"], "/v1/server", serveServer],
 ];

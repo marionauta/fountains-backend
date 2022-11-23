@@ -1,4 +1,11 @@
-import { Status, STATUS_TEXT } from "deno/http/http_status.ts";
+import {
+  isClientErrorStatus,
+  isErrorStatus,
+  isRedirectStatus,
+  isServerErrorStatus,
+  Status,
+  STATUS_TEXT,
+} from "deno/http/http_status.ts";
 import { Handler } from "deno/http/server.ts";
 import * as logger from "deno/log/mod.ts";
 
@@ -7,10 +14,12 @@ type Middleware = (next: Handler) => Handler;
 const formatFailedResponses: Middleware = (next) =>
   async (request, connInfo) => {
     const response = await next(request, connInfo);
-    if (response.ok) return response;
     const status: Status = response.status;
-    const body = JSON.stringify({ error: STATUS_TEXT[status] });
-    return new Response(body, { status });
+    if (isErrorStatus(status)) {
+      const body = JSON.stringify({ error: STATUS_TEXT[status] });
+      return new Response(body, { status });
+    }
+    return response;
   };
 
 const logFailedResponses: Middleware = (next) =>
@@ -18,9 +27,9 @@ const logFailedResponses: Middleware = (next) =>
     const response = await next(request, connInfo);
     const pathname = new URL(request.url).pathname;
     const message = `${response.status} ${request.method} ${pathname}`;
-    if (response.status >= 500) {
+    if (isServerErrorStatus(response.status)) {
       logger.error(message);
-    } else if (!response.ok) {
+    } else if (isClientErrorStatus(response.status)) {
       logger.warning(message);
     }
     return response;
@@ -29,7 +38,9 @@ const logFailedResponses: Middleware = (next) =>
 const everythingIsJson: Middleware = (next) =>
   async (request, connInfo) => {
     const response = await next(request, connInfo);
-    response.headers.set("content-type", "application/json");
+    if (!isRedirectStatus(response.status)) {
+      response.headers.set("content-type", "application/json");
+    }
     return response;
   };
 
