@@ -1,6 +1,9 @@
 export interface AreaOsm {
   osm_type: string;
   osm_id: number;
+  lat: string;
+  lon: string;
+  display_name: string;
   importance: number;
 }
 
