@@ -1,4 +1,4 @@
-import { FountainOsm } from "../osm/overpass.ts";
+import { FountainOsm } from "@/osm/overpass.ts";
 
 import { LocationDto } from "./locationDto.ts";
 import { PropertiesDto } from "./propertiesDto.ts";
