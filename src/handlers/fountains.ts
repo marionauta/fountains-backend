@@ -2,6 +2,7 @@ import { Handler } from "deno/http/server.ts";
 import { Status } from "deno/http/http_status.ts";
 import * as logger from "deno/log/mod.ts";
 import { osmIntoDto } from "@/models/drinkingFountainDto.ts";
+import { serverResponse } from "@/models/server_response.ts";
 import { getArea, getFountains } from "@/services/mod.ts";
 import { getAreaId } from "@/osm/nominatim.ts";
 
@@ -17,7 +18,7 @@ const serveFountains: Handler = async () => {
     lastUpdated,
     fountains: fountains.map(osmIntoDto),
   };
-  return new Response(JSON.stringify({ data }));
+  return new Response(serverResponse({ data }));
 };
 
 export default serveFountains;

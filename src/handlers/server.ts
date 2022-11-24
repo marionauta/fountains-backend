@@ -1,12 +1,13 @@
 import { Handler } from "deno/http/server.ts";
+import { serverResponse } from "@/models/server_response.ts";
 import { getArea } from "@/services/mod.ts";
 
 const serveServer: Handler = async () => {
   const area = await getArea();
-  const body = {
+  const data = {
     area,
   };
-  return new Response(JSON.stringify(body));
+  return new Response(serverResponse({ data }));
 };
 
 export default serveServer;

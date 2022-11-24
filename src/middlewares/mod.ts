@@ -8,6 +8,7 @@ import {
 } from "deno/http/http_status.ts";
 import { Handler } from "deno/http/server.ts";
 import * as logger from "deno/log/mod.ts";
+import { serverResponse } from "@/models/server_response.ts";
 
 type Middleware = (next: Handler) => Handler;
 
@@ -16,7 +17,7 @@ const formatFailedResponses: Middleware = (next) =>
     const response = await next(request, connInfo);
     const status: Status = response.status;
     if (isErrorStatus(status)) {
-      const body = JSON.stringify({ error: STATUS_TEXT[status] });
+      const body = serverResponse({ error: STATUS_TEXT[status] });
       return new Response(body, { status });
     }
     return response;
