@@ -1,10 +1,11 @@
 # Fountains Backend
 
-A simple server that fetches OpenSteetMap data and processes it.
+A simple server that fetches [OpenSteetMap][osm] (OSM) data and processes it.
 
 ## Build
 
-You're going to need [Deno][deno] installed. To build an executable with no dependencies run `make`.
+You're going to need [Deno][deno] installed. To build an executable with no
+dependencies run `make`.
 
 You can pass extra flags to the `deno compile` command:
 
@@ -14,13 +15,22 @@ make DENOFLAGS="--target=x86_64-unknown-linux-gnu"
 
 ## Run
 
-The `FOUNTAINS_AREA` environment variable is **required**. Defines the region where the server will look for data.
+Just compile the program and run it. You can configure it with environment
+variables.
 
-You can set the `PORT` environment variable to change the port. Default is `8080`.
+### Environment variables
+
+| Name               | Description                                                                      | Default              | Required |
+| ------------------ | -------------------------------------------------------------------------------- | -------------------- | -------- |
+| `FOUNTAINS_AREA`   | Defines the region where the server will look for data, eg: `Berlin, Germany`    |                      | Yes      |
+| `PORT`             | Port where the server will listen connections                                    | `8080`               | No       |
+| `CACHE_TIME`       | Time (in milliseconds) the server will cache data before requesting to OSM again | `21600000` (6 hours) | No       |
+| `LANGUAGE`, `LANG` | Language to query OSM                                                            |                      | No       |
 
 ### Systemd
 
 An example systemd service file is provided. It makes the following assumptions:
+
 - The executable is located at `/usr/local/bin/fountains`.
 - A `/var/www/fountains/environment` file exists with environment variables.
 
@@ -29,4 +39,5 @@ FOUNTAINS_AREA="London, UK"
 PORT="3000"
 ```
 
+[osm]: https://www.openstreetmap.org/
 [deno]: https://deno.land/
