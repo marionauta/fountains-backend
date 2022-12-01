@@ -1,5 +1,5 @@
 interface OverpassResponse<T> {
-  elements: [T];
+  elements: T[];
 }
 
 export interface FountainOsm {
@@ -9,7 +9,7 @@ export interface FountainOsm {
   tags: Record<string, string>;
 }
 
-export const query = async (areaId: number): Promise<[FountainOsm]> => {
+export const query = async (areaId: number): Promise<FountainOsm[]> => {
   const data = `
     [out:json];
     area(${areaId});

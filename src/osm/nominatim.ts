@@ -1,3 +1,5 @@
+import { getLanguageString } from "@/services/mod.ts";
+
 export interface AreaOsm {
   osm_type: string;
   osm_id: number;
@@ -10,7 +12,14 @@ export interface AreaOsm {
 export const query = async (name: string): Promise<AreaOsm | null> => {
   const url =
     `https://nominatim.openstreetmap.org/search?q=${name}&format=json`;
-  const areas: [AreaOsm] = await fetch(encodeURI(url))
+
+  const headers = new Headers();
+  const language = getLanguageString();
+  if (language != undefined) {
+    headers.set("accept-language", language);
+  }
+
+  const areas: [AreaOsm] = await fetch(encodeURI(url), { headers })
     .then((res) => res.json());
   const area = areas.reduce((acc, area) =>
     acc.importance > area.importance ? acc : area
