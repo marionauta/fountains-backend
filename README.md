@@ -13,6 +13,54 @@ You can pass extra flags to the `deno compile` command:
 make DENOFLAGS="--target=x86_64-unknown-linux-gnu"
 ```
 
+## Documentation
+
+The server exposes two endpoints:
+
+### `GET /v1/server`
+
+```ts
+{
+  "data": {
+    "cacheTime": number, // int, milliseconds
+    "language": string, // "accept-language" format
+    "area": {
+      "osmId": number,
+      "osmType": string,
+      "displayName": string,
+      "location": {
+        "latitude": number,
+        "longitude": number,
+      },
+    },
+  },
+}
+```
+
+### `GET /v1/drinking-fountains`
+
+```ts
+{
+  "data": {
+    "lastUpdated": string, // date, ISO-8601
+    "fountains": [
+      {
+        "id": string,
+        "name": string,
+        "location": {
+          "latitude": number,
+          "longitude": number,
+        },
+        "properties": {
+          "bottle": string,
+          "wheelchair": string,
+        },
+      },
+    ],
+  },
+}
+```
+
 ## Run
 
 Just compile the program and run it. You can configure it with environment
