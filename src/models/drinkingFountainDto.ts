@@ -21,6 +21,7 @@ export const osmIntoDto = (osm: FountainOsm): DrinkingFountainDto => {
     properties: {
       bottle: osm.tags["bottle"] || "unknown",
       wheelchair: osm.tags["wheelchair"] || "unknown",
+      checkDate: osm.tags["check_date"],
     },
   };
 };
