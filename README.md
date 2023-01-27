@@ -4,8 +4,8 @@ A simple server that fetches [OpenSteetMap][osm] (OSM) data and processes it.
 
 ## Build
 
-You're going to need [Deno][deno] installed. To build an executable with no
-dependencies run `make`.
+You're going to need [Deno][deno] version 1.30.0 or better installed. To build
+an executable with no dependencies run `make`.
 
 You can pass extra flags to the `deno compile` command:
 
