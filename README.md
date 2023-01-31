@@ -52,8 +52,9 @@ The server exposes two endpoints:
           "longitude": number,
         },
         "properties": {
-          "bottle": string,
-          "wheelchair": string,
+          "bottle": "unknown" | "no" | "yes",
+          "wheelchair": "unknown" | "no" | "limited" | "yes",
+          "checkDate": undefined | string, // yyyy-mm-dd
         },
       },
     ],
