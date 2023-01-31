@@ -12,6 +12,16 @@ import { serverResponse } from "@/models/server_response.ts";
 
 type Middleware = (next: Handler) => Handler;
 
+const catchAllErrors: Middleware = (next) => async (request, connInfo) => {
+  try {
+    return await next(request, connInfo);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : error;
+    const body = serverResponse({ error: message });
+    return new Response(body, { status: Status.InternalServerError });
+  }
+};
+
 const formatFailedResponses: Middleware =
   (next) => async (request, connInfo) => {
     const response = await next(request, connInfo);
@@ -47,6 +57,7 @@ const compose = (...middlewares: Middleware[]): Middleware => (next) =>
   middlewares.reduce((acc, cur) => cur(acc), next);
 
 const middlewares = compose(
+  catchAllErrors,
   logFailedResponses,
   formatFailedResponses,
   everythingIsJson,
