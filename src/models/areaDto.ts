@@ -1,5 +1,5 @@
 import { AreaOsm } from "@/osm/nominatim.ts";
-import { LocationDto } from "./locationDto.ts";
+import { LocationDto } from "@/models/locationDto.ts";
 
 export interface AreaDto {
   osmId: number;

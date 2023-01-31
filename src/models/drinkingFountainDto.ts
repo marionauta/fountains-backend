@@ -1,7 +1,7 @@
 import { FountainOsm } from "@/osm/overpass.ts";
 
-import { LocationDto } from "./locationDto.ts";
-import { PropertiesDto } from "./propertiesDto.ts";
+import { LocationDto } from "@/models/locationDto.ts";
+import { PropertiesDto } from "@/models/propertiesDto.ts";
 
 export interface DrinkingFountainDto {
   id: string;

@@ -1,3 +1,3 @@
-export { getArea } from "./area.ts";
-export { getCacheTime, getLanguageString } from "./configuration.ts";
-export { getFountains } from "./fountains.ts";
+export { getArea } from "@/services/area.ts";
+export { getCacheTime, getLanguageString } from "@/services/configuration.ts";
+export { getFountains } from "@/services/fountains.ts";
