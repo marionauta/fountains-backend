@@ -54,6 +54,7 @@ The server exposes two endpoints:
         "properties": {
           "bottle": "unknown" | "no" | "yes",
           "wheelchair": "unknown" | "no" | "limited" | "yes",
+          "mapillaryId": undefined | string,
           "checkDate": undefined | string, // yyyy-mm-dd
         },
       },
