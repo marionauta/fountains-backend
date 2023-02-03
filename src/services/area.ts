@@ -20,5 +20,6 @@ export const getArea = async (): Promise<AreaDto> => {
     Deno.exit(1);
   }
   area = osmIntoDto(areaOsm);
+  logger.info(`Found area info for: ${area.displayName}`);
   return area;
 };
