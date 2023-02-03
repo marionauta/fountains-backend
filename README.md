@@ -23,7 +23,7 @@ The server exposes two endpoints:
 {
   "data": {
     "cacheTime": number, // int, milliseconds
-    "language": string, // "accept-language" format
+    "language": undefined | string, // "accept-language" format
     "area": {
       "osmId": number,
       "osmType": string,
