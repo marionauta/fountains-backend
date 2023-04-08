@@ -2,6 +2,10 @@
 
 A simple server that fetches [OpenSteetMap][osm] (OSM) data and processes it.
 
+**Note:** This repository contains backend code that was used by
+[Water Finder][waterfinder], an android and iOS mobile app to find drinking fountains nearby. The app no longer relies on the backend to process OSM data.
+This repository won't receive further updates.
+
 ## Build
 
 You're going to need [Deno][deno] version 1.30.0 or better installed. To build
@@ -89,5 +93,6 @@ FOUNTAINS_AREA="London, UK"
 PORT="3000"
 ```
 
+[waterfinder]: https://aguapp.nachbaur.dev
 [osm]: https://www.openstreetmap.org/
 [deno]: https://deno.land/
